@@ -85,13 +85,11 @@ server.get('/npm-answers', (req, res) => {
   Post.find({ tags: { $in: ['npm'] } })
   .exec((err, answer) => {
     if (err) {
-          sendUserError(err, res);
-          return;
-        }
-        res.json(answer);
-      });
+      sendUserError(err, res);
+      return;
+    }
     res.json(answer);
   });
-//   db.getCollection('posts').find({{ tags:{$in:['npm']}}})
 });
+//   db.getCollection('posts').find({{ tags:{$in:['npm']}}})
 module.exports = { server };
