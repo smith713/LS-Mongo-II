@@ -31,7 +31,7 @@ server.get('/posts', (req, res) => {
 });
 
 server.get('/accepted-answer/:soID', (req, res) => {
-  // db.getCollection('posts').find({$and:[{soID:{$eq:111102}}, {acceptedAnswerID:{$ne:null}}]})
+ // Post.find({ $and: [{ soID: { $eq: 111102 } }, { acceptedAnswerID: { $ne: null } }] });
   const { soID } = req.params;
   const parentID = null;
   Post.findOne({ soID })
@@ -68,16 +68,28 @@ server.get('/top-answer/:soID', (req, res) => {
 
 server.get('/popular-jquery-questions', (req, res) => {
   // const arr = [];
-  Post.find({ $and: [{ tags: { $in: ['jquery'] } }, { $or: [{ score: {$gt:5000}}, {reputation: {$gt:200000}}]}]}).exec((err, answer) => {
-  //  arr.concat(answer);
-  //  console.log(answer);
-    res.json(answer);
-  });
-//   db.getCollection('posts').find({$and : [{ tags:{$in:['jquery']}}, { $or: [{score: {$gt:5000}}, {reputation: {$gt:200000}}]}]})
+  Post.find({
+    $and: [
+      { tags: { $in: ['jquery'] } },
+      { $or: [{ score: { $gt: 5000 } }, { reputation: { $gt: 200000 } }] }] })
+      .exec((err, answer) => {
+        if (err) {
+          sendUserError(err, res);
+          return;
+        }
+        res.json(answer);
+      });
 });
 
 server.get('/npm-answers', (req, res) => {
-  Post.find({ tags:{$in:['npm']}}).exec((err, answer) => {
+  Post.find({ tags: { $in: ['npm'] } })
+  .exec((err, answer) => {
+    if (err) {
+          sendUserError(err, res);
+          return;
+        }
+        res.json(answer);
+      });
     res.json(answer);
   });
 //   db.getCollection('posts').find({{ tags:{$in:['npm']}}})
