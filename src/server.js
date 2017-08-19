@@ -31,24 +31,31 @@ server.get('/posts', (req, res) => {
 });
 
 server.get('/accepted-answer/:soID', (req, res) => {
- // Post.find({ $and: [{ soID: { $eq: 111102 } }, { acceptedAnswerID: { $ne: null } }] });
-  const { soID } = req.params;
-  const parentID = null;
-  Post.findOne({ soID })
-    .exec((err, post) => {
-      if (!post || parentID !== null) {
-        sendUserError(err, res);
-        return;
-      }
-      Post.findOne({ soID: post.acceptedAnswerID })
-        .exec((error, answer) => {
-          if (!answer) {
-            sendUserError(error, res);
-            return;
-          }
-          res.json(answer);
-        });
-    });
+  Post.find({ $and: [{ soID: { $eq: 111102 } }, { acceptedAnswerID: { $ne: null } }] })
+   .exec((error, answer) => {
+     if (!answer) {
+       sendUserError(error, res);
+       return;
+     }
+     res.json(answer);
+   });
+  // const { soID } = req.params;
+  // const parentID = null;
+  // Post.findOne({ soID })
+  //   .exec((err, post) => {
+  //     if (!post || parentID !== null) {
+  //       sendUserError(err, res);
+  //       return;
+  //     }
+  //     Post.findOne({ soID: post.acceptedAnswerID })
+  //       .exec((error, answer) => {
+  //         if (!answer) {
+  //           sendUserError(error, res);
+  //           return;
+  //         }
+  //         res.json(answer);
+  //       });
+  //   });
 });
 
 server.get('/top-answer/:soID', (req, res) => {
