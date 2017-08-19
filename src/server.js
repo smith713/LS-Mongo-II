@@ -31,7 +31,7 @@ server.get('/posts', (req, res) => {
 });
 
 server.get('/accepted-answer/:soID', (req, res) => {
-  Post.find({ $and: [{ soID: { $eq: 111102 } }, { acceptedAnswerID: { $ne: null } }] })
+  Post.find({ $and: [{ soID: { $eq: req.params.soID } }, { acceptedAnswerID: { $ne: null } }] })
    .exec((error, answer) => {
      if (!answer) {
        sendUserError(error, res);
@@ -39,6 +39,17 @@ server.get('/accepted-answer/:soID', (req, res) => {
      }
      res.json(answer);
    });
+});
+
+server.get('/top-answer/:soID', (req, res) => {
+  Post.find({ $and: [{ soID: { $eq: 111102 } }, { acceptedAnswerID: { $eq: null } }].sort({ score: -1 }) })
+    .exec((error, answer) => {
+      if (!answer) {
+        sendUserError(error, res);
+        return;
+      }
+      res.json(answer);
+    });
   // const { soID } = req.params;
   // const parentID = null;
   // Post.findOne({ soID })
@@ -47,27 +58,7 @@ server.get('/accepted-answer/:soID', (req, res) => {
   //       sendUserError(err, res);
   //       return;
   //     }
-  //     Post.findOne({ soID: post.acceptedAnswerID })
-  //       .exec((error, answer) => {
-  //         if (!answer) {
-  //           sendUserError(error, res);
-  //           return;
-  //         }
-  //         res.json(answer);
-  //       });
   //   });
-});
-
-server.get('/top-answer/:soID', (req, res) => {
-  const { soID } = req.params;
-  const parentID = null;
-  Post.findOne({ soID })
-    .exec((err, post) => {
-      if (!post || parentID !== null) {
-        sendUserError(err, res);
-        return;
-      }
-    });
   // find answers sort by score in descending order (-1)
   // select  from answers where acceptedAnswerID = null
   // return the first element in the array
@@ -100,3 +91,21 @@ server.get('/npm-answers', (req, res) => {
 });
 //   db.getCollection('posts').find({{ tags:{$in:['npm']}}})
 module.exports = { server };
+
+  // const { soID } = req.params;
+  // const parentID = null;
+  // Post.findOne({ soID })
+  //   .exec((err, post) => {
+  //     if (!post || parentID !== null) {
+  //       sendUserError(err, res);
+  //       return;
+  //     }
+  //     Post.findOne({ soID: post.acceptedAnswerID })
+  //       .exec((error, answer) => {
+  //         if (!answer) {
+  //           sendUserError(error, res);
+  //           return;
+  //         }
+  //         res.json(answer);
+  //       });
+  //   });
